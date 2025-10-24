@@ -41,22 +41,15 @@ class Project
     #[ORM\JoinTable(name: 'project_employee')]
     private Collection $members;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectStatus::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $projectStatuses;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Task::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $tasks;
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'projects')]
-    #[ORM\JoinTable(name: 'project_tag')]
-    private Collection $tags;
 
     public function __construct()
     {
         $this->members = new ArrayCollection();
-        $this->projectStatuses = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,34 +141,6 @@ class Project
         return $this;
     }
 
-    /**
-     * @return Collection<int, ProjectStatus>
-     */
-    public function getProjectStatuses(): Collection
-    {
-        return $this->projectStatuses;
-    }
-
-    public function addProjectStatus(ProjectStatus $status): self
-    {
-        if (!$this->projectStatuses->contains($status)) {
-            $this->projectStatuses->add($status);
-            $status->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProjectStatus(ProjectStatus $status): self
-    {
-        if ($this->projectStatuses->removeElement($status)) {
-            if ($status->getProject() === $this) {
-                $status->setProject(null); // orphanRemoval
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Task>
@@ -203,28 +168,6 @@ class Project
             }
         }
 
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Tag>
-     */
-    public function getTags(): Collection
-    {
-        return $this->tags;
-    }
-
-    public function addTag(Tag $tag): self
-    {
-        if (!$this->tags->contains($tag)) {
-            $this->tags->add($tag);
-        }
-        return $this;
-    }
-
-    public function removeTag(Tag $tag): self
-    {
-        $this->tags->removeElement($tag);
         return $this;
     }
 }

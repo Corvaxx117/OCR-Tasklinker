@@ -57,13 +57,9 @@ class Employee
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'members')]
     private Collection $projects;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: TimeEntry::class, cascade: ['remove'])]
-    private Collection $timeEntries;
-
     public function __construct()
     {
         $this->projects = new ArrayCollection();
-        $this->timeEntries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,13 +177,5 @@ class Employee
     public function getInitials(): string
     {
         return strtoupper(substr($this->firstName ?? '', 0, 1) . substr($this->lastName ?? '', 0, 1));
-    }
-
-    /**
-     * @return Collection<int, TimeEntry>
-     */
-    public function getTimeEntries(): Collection
-    {
-        return $this->timeEntries;
     }
 }

@@ -6,6 +6,7 @@ namespace App\Controller\Project;
 
 use App\Entity\Project;
 use App\Entity\Task;
+use App\Enum\TaskStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,30 +21,24 @@ class ProjectShowAction extends AbstractController
             return $this->redirectToRoute('project_list');
         }
         // Regroupement des tâches par statut (To Do / Doing / Done)
-        // Hypothèse: projectStatus.label contient ces libellés
         $tasks = $em->getRepository(Task::class)->findBy(['project' => $project]);
         $todo = [];
         $doing = [];
         $done = [];
         foreach ($tasks as $task) {
-            $label = $task->getProjectStatus()?->getLabel();
-            switch ($label) {
-                case 'Doing':
-                    $doing[] = $task;
-                    break;
-                case 'Done':
-                    $done[] = $task;
-                    break;
-                default:
-                    $todo[] = $task;
-                    break; // fallback To Do
-            }
+            $status = $task->getStatus();
+            match ($status) {
+                TaskStatus::DOING => $doing[] = $task,
+                TaskStatus::DONE => $done[] = $task,
+                default => $todo[] = $task,
+            };
         }
         return $this->render('task/board.html.twig', [
             'project' => $project,
             'tasks_todo' => $todo,
             'tasks_doing' => $doing,
             'tasks_done' => $done,
+            'statuses' => TaskStatus::ordered(),
         ]);
     }
 }
