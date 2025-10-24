@@ -7,12 +7,12 @@ namespace App\Form;
 use App\Entity\Task;
 use App\Entity\Employee;
 use App\Entity\Project;
-use App\Entity\ProjectStatus;
-use App\Entity\Tag;
+use App\Enum\TaskStatus;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -35,10 +35,10 @@ class TaskType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Deadline'
             ])
-            ->add('projectStatus', EntityType::class, [
-                'class' => ProjectStatus::class,
-                'choice_label' => 'label',
-                'label' => 'Statut'
+            ->add('status', EnumType::class, [
+                'class' => TaskStatus::class,
+                'label' => 'Statut',
+                'choice_label' => fn(TaskStatus $s) => $s->label(),
             ])
             ->add('employee', EntityType::class, [
                 'class' => Employee::class,
@@ -49,13 +49,6 @@ class TaskType extends AbstractType
                 'class' => Project::class,
                 'choice_label' => 'name',
                 'label' => 'Projet'
-            ])
-            ->add('tags', EntityType::class, [
-                'class' => Tag::class,
-                'choice_label' => fn(Tag $t) => $t->getType() . ': ' . $t->getLabel(),
-                'multiple' => true,
-                'required' => false,
-                'label' => 'Tags'
             ])
         ;
     }
