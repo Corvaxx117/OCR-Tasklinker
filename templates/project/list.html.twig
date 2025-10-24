@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
-{% block title %}Liste des projets - TaskLinker
-{% endblock %}
-{% block page_title %}Projets
-{% endblock %}
+
+{% block title %}Liste des projets - TaskLinker{% endblock %}
+
+{% block page_title %}Projets{% endblock %}
+
 {% block body %}
 	<div id="projects-container">
 		{% for project in projects %}
@@ -14,9 +15,8 @@
 					<a href="{{ path('project_edit', {id: project.id}) }}" title="Modifier">
 						<i class="fa-solid fa-pen"></i>
 					</a>
-					{# Lien JS pour suppression sans CSRF #}
-					<a href="#" class="delete-project" data-action="{{ path('project_delete', {id: project.id}) }}" title="Supprimer" data-project-id="{{ project.id }}" data-confirm="Supprimer le projet '{{ project.name }}' ?">
-						<i class="fa-solid fa-trash"></i>
+					<a href="#" class="delete-project" data-action="{{ path('project_archive', {id: project.id}) }}" title="Supprimer" data-project-id="{{ project.id }}" data-confirm="Supprimer le projet '{{ project.name }}' ?">
+						<i class="fa-solid fa-trash" style="pointer-events:none"></i>
 					</a>
 				</div>
 			</article>
@@ -30,4 +30,8 @@
 			</a>
 		</article>
 	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="module" src="{{ asset('js/DeleteProject.js') }}"></script>
 {% endblock %}

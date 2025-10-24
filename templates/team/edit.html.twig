@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
-{% block title %}Modifier employé - TaskLinker
-{% endblock %}
-{% block page_title %}Modifier employé
-{% endblock %}
+
+{% block title %}Modifier employé - TaskLinker{% endblock %}
+
+{% block page_title %}Modifier employé{% endblock %}
+
 {% block body %}
+	<a href="{{ path('team_list') }}" class="back-link">&larr; retour</a>
 	<form name="employe" method="post">
 		{{ form_start(form) }}
 		<div class="field-inline">

@@ -1,13 +1,11 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}
 	{% if is_edit %}Modifier le projet{% else %}Nouveau projet
 	{% endif %}
 	- TaskLinker
 {% endblock %}
-{% block page_title %}
-	{% if is_edit %}Modifier le projet{% else %}Nouveau projet
-	{% endif %}
-{% endblock %}
+
 {% block body %}
 	<form name="projet" method="post">
 		{{ form_start(form) }}

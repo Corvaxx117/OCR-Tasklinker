@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
-{% block title %}Liste des employés - TaskLinker
-{% endblock %}
-{% block page_title %}Équipe
-{% endblock %}
+
+{% block title %}Liste des employés - TaskLinker{% endblock %}
+
+{% block page_title %}Équipe{% endblock %}
+
 {% block body %}
 	<table id="team-container">
 		<thead>
@@ -32,9 +33,9 @@
 						<a href="{{ path('employee_edit', {id: employee.id}) }}" title="Modifier" class="button button-edit-team">
 							Éditer
 						</a>
-						<form action="{{ path('employee_delete', {id: employee.id}) }}" method="post" style="display:inline" onsubmit="return confirm('Supprimer cet employé ?');">
-							<button type="submit" class="delete-team" title="Supprimer"></button>
-						</form>
+						<a href="#" class="delete-employee delete-team" data-action="{{ path('employee_delete', {id: employee.id}) }}" data-confirm="Supprimer cet employé ?" title="Supprimer">
+							Supprimer
+						</a>
 					</td>
 				</tr>
 			{% else %}
@@ -46,4 +47,8 @@
 			{% endfor %}
 		</tbody>
 	</table>
+{% endblock %}
+
+{% block scripts %}
+	<script type="module" src="{{ asset('js/DeleteEmployee.js') }}"></script>
 {% endblock %}

@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %}Tâches du projet - TaskLinker
-{% endblock %}
-{% block page_title %}Tâches du projet
-{% endblock %}
+
+{% block title %}Tâches du projet - TaskLinker{% endblock %}
+
+{% block page_title %}Tâches du projet{% endblock %}
+
 {% block body %}
 	<div id="content">
+		<a href="{{ path('project_list') }}" class="back-link">&larr; retour</a>
 		<div
 			id="tasks-container">
 			{# Trois colonnes: To Do / Doing / Done #}

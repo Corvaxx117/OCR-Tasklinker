@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}
-	{{ project.name }}
-	- TaskLinker
-{% endblock %}
+
+	{{ project.name }}- TaskLinker{% endblock %}
+
 {% block page_title %}
 	{{ project.name }}
 {% endblock %}
+
 {% block body %}
 	<div id="tasks-container">
 		<p class="description">{{ project.description|default('Aucune description.') }}</p>
