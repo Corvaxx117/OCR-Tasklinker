@@ -1,8 +1,4 @@
 // Classe générique de gestion des liens de suppression (projets, tags, employés...).
-// Usage:
-// import DeleteLinkHandler from './class/DeleteLinkHandler.js';
-// new DeleteLinkHandler({ selector: 'a.delete-project' });
-// Options:
 // selector: sélecteur CSS des liens à intercepter
 // method: méthode HTTP (POST par défaut)
 // getConfirmMessage(link): fonction retournant le message de confirmation (string ou null pour désactiver)
@@ -32,22 +28,39 @@ export default class DeleteLinkHandler {
     }
 
     _bind() {
-        document.addEventListener("click", (e) => {
-            const link = e.target.closest(this.selector);
-            if (!link) return;
-            const url = link.dataset.action;
-            if (!url) return;
-            e.preventDefault();
-            const msg = this.getConfirmMessage(link);
-            if (msg && !window.confirm(msg)) return;
-            fetch(url, { method: this.method })
-                .then((r) => {
-                    if (!r.ok) throw new Error("Serveur (" + r.status + ")");
-                    const removable = this.findRemovable(link);
-                    if (removable) removable.remove();
-                    this.onSuccess(link, r);
-                })
-                .catch((err) => this.onError(link, err));
+        document.querySelectorAll(this.selector).forEach((element) => {
+            element.addEventListener("click", (e) => {
+                e.preventDefault();
+                const link = e.target;
+                const url = link.dataset.action;
+
+                // Verification si l'attr data-action existe
+                if (!url) {
+                    return;
+                }
+
+                const msg = this.getConfirmMessage(link);
+
+                if (msg && !window.confirm(msg)) {
+                    return;
+                }
+
+                fetch(url, { method: this.method })
+                    .then((r) => {
+                        if (!r.ok) {
+                            throw new Error("Serveur (" + r.status + ")");
+                        }
+
+                        const removable = this.findRemovable(link);
+
+                        if (removable) {
+                            removable.remove();
+                        }
+
+                        this.onSuccess(link, r);
+                    })
+                    .catch((err) => this.onError(link, err));
+            });
         });
     }
 }
