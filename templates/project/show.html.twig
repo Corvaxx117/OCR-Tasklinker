@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{ project.name }}
+	- TaskLinker
+{% endblock %}
+{% block page_title %}
+	{{ project.name }}
+{% endblock %}
+{% block body %}
+	<div id="tasks-container">
+		<p class="description">{{ project.description|default('Aucune description.') }}</p>
+		<div class="meta">
+			<span>Démarré le :
+				{{ project.startedAt|date('d/m/Y H:i') }}</span>
+			{% if project.deadline %}
+				<span>Deadline :
+					{{ project.deadline|date('d/m/Y H:i') }}</span>
+			{% endif %}
+		</div>
+		<div class="members">
+			<strong>Membres:</strong>
+			{% if project.members is not empty %}
+				<ul>
+					{% for member in project.members %}
+						<li>{{ member.getFirstName() }}
+							{{ member.getLastName() }}</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				<em>Aucun membre</em>
+			{% endif %}
+		</div>
+		<div class="actions">
+			<a class="button" href="{{ path('project_edit', {id: project.id}) }}">Modifier</a>
+			<form action="{{ path('project_archive', {id: project.id}) }}" method="post" style="display:inline" onsubmit="return confirm('Archiver ce projet ?');">
+				<button type="submit" class="button button-danger">Archiver</button>
+			</form>
+		</div>
+	</div>
+{% endblock %}

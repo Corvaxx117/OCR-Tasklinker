@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{% if is_edit %}Modifier le projet{% else %}Nouveau projet
+	{% endif %}
+	- TaskLinker
+{% endblock %}
+{% block page_title %}
+	{% if is_edit %}Modifier le projet{% else %}Nouveau projet
+	{% endif %}
+{% endblock %}
+{% block body %}
+	<form name="projet" method="post">
+		{{ form_start(form) }}
+		<div class="field">{{ form_row(form.name) }}</div>
+		<div class="field">{{ form_row(form.description) }}</div>
+		<div class="field-inline">
+			<div class="field">{{ form_row(form.startedAt) }}</div>
+			<div class="field">{{ form_row(form.deadline) }}</div>
+		</div>
+		<div class="field">{{ form_row(form.members) }}</div>
+		<button class="button button-submit">{{ is_edit ? 'Enregistrer' : 'Créer' }}</button>
+		{{ form_end(form) }}
+	</form>
+{% endblock %}

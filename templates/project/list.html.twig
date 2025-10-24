@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% block title %}Liste des projets - TaskLinker
+{% endblock %}
+{% block page_title %}Projets
+{% endblock %}
+{% block body %}
+	<div id="projects-container">
+		{% for project in projects %}
+			<article class="card-project">
+				<a href="{{ path('project_show', {id: project.id}) }}">
+					<h2>{{ project.name }}</h2>
+				</a>
+				<div class="card-project-icons">
+					<a href="{{ path('project_edit', {id: project.id}) }}" title="Modifier">
+						<i class="fa-solid fa-pen"></i>
+					</a>
+					{# Lien JS pour suppression sans CSRF #}
+					<a href="#" class="delete-project" data-action="{{ path('project_delete', {id: project.id}) }}" title="Supprimer" data-project-id="{{ project.id }}" data-confirm="Supprimer le projet '{{ project.name }}' ?">
+						<i class="fa-solid fa-trash"></i>
+					</a>
+				</div>
+			</article>
+		{% else %}
+			<p>Aucun projet actif.</p>
+		{% endfor %}
+		<article class="card-project">
+			<a href="{{ path('project_create') }}">
+				<i class="fa-solid fa-circle-plus add-project-icon"></i>
+				<h2>Ajouter un projet</h2>
+			</a>
+		</article>
+	</div>
+{% endblock %}

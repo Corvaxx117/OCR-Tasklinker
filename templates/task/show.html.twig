@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{ task.title }}
+	- TaskLinker
+{% endblock %}
+{% block page_title %}
+	{{ task.title }}
+{% endblock %}
+{% block body %}
+	<div id="task-container">
+		<h2>{{ task.title }}</h2>
+		<p>{{ task.description|default('Pas de description.') }}</p>
+		<div class="meta">
+			{% if task.deadline %}
+				<span>Deadline :
+					{{ task.deadline|date('d/m/Y H:i') }}</span>
+			{% endif %}
+			<span>Projet :
+				<a href="{{ path('project_show', {id: task.project.id}) }}">{{ task.project.name }}</a>
+			</span>
+			{% if task.employee %}
+				<span>Assignée à :
+					{{ task.employee.firstName }}
+					{{ task.employee.lastName }}</span>
+			{% endif %}
+			<span>Status :
+				{{ task.projectStatus.label }}</span>
+		</div>
+		<div class="tags">
+			{% for tag in task.tags %}
+				<span class="tag">{{ tag.type }}:
+					{{ tag.label }}</span>
+			{% else %}
+				<em>Aucun tag</em>
+			{% endfor %}
+		</div>
+		<div class="time-entries">
+			<strong>Temps enregistré :</strong>
+			<ul>
+				{% for entry in task.timeEntries %}
+					<li>{{ entry.startedAt|date('d/m/Y H:i') }}
+						→
+						{% if entry.endedAt %}
+							{{ entry.endedAt|date('H:i') }}{% else %}en cours
+						{% endif %}
+						par
+						{{ entry.user.firstName }}
+						{{ entry.user.lastName }}</li>
+				{% else %}
+					<li>
+						<em>Aucun enregistrement</em>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="actions">
+			<a href="{{ path('task_edit', {id: task.id}) }}" class="button">Modifier</a>
+			<a href="#" class="button button-danger delete-task" data-action="{{ path('task_delete', {id: task.id}) }}" data-confirm="Supprimer la tâche '{{ task.title }}' ?">Supprimer</a>
+			<a href="{{ path('project_show', {id: task.project.id}) }}" class="button">Retour au tableau</a>
+		</div>
+	</div>
+{% endblock %}
