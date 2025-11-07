@@ -33,22 +33,24 @@ class TaskType extends AbstractType
             ->add('deadline', DateTimeType::class, [
                 'required' => false,
                 'widget' => 'single_text',
-                'label' => 'Deadline'
+                'label' => 'Deadline',
+                'html5' => true,
+                'attr' => [
+                    'min' => (new \DateTimeImmutable('today'))->format('Y-m-d\TH:i'),
+                ],
             ])
             ->add('status', EnumType::class, [
                 'class' => TaskStatus::class,
                 'label' => 'Statut',
                 'choice_label' => fn(TaskStatus $s) => $s->label(),
             ])
-            ->add('employee', EntityType::class, [
+            ->add('assignees', EntityType::class, [
                 'class' => Employee::class,
+                'multiple' => true,
+                'by_reference' => false, // pour que add/removeAssignee soient appelés
                 'choice_label' => fn(Employee $e) => $e->getFirstName() . ' ' . $e->getLastName(),
-                'label' => 'Assigné à'
-            ])
-            ->add('project', EntityType::class, [
-                'class' => Project::class,
-                'choice_label' => 'name',
-                'label' => 'Projet'
+                'label' => 'Assigner des membres',
+                'required' => false,
             ])
         ;
     }

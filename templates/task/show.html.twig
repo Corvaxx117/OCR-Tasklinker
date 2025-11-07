@@ -22,20 +22,28 @@
 						{{ task.deadline|date('d/m/Y H:i') }}
 					</div>
 				{% endif %}
-				{% if task.employee %}
-					<div class="mini-user" title="{{ task.employee.firstName }} {{ task.employee.lastName }}">{{ task.employee.firstName|slice(0,1) }}{{ task.employee.lastName|slice(0,1) }}</div>
+				{% if task.assignees is not empty %}
+					<div class="assignees d-flex">
+						{% for person in task.assignees %}
+							<div class="mini-user" title="{{ person.firstName }} {{ person.lastName }}">
+								{{ person.firstName|slice(0,1) }}{{ person.lastName|slice(0,1) }}
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					<div class="assignees none">Non assignée</div>
 				{% endif %}
-				<div class="task-status">Statut :
-					{{ task.status.label() }}</div>
 			</div>
 			<div class="task-extra">
-				<div class="task-project">Projet :
+				<div class="task-status mt-2">Statut :
+					{{ task.status.value }}</div>
+				<div class="task-project mt-2">Projet :
 					<a href="{{ path('project_show', {id: task.project.id}) }}">{{ task.project.name }}</a>
 				</div>
 			</div>
 			<div class="task-actions">
 				<a href="{{ path('task_edit', {id: task.id}) }}" class="button">Modifier</a>
-				<a href="#" class="button js-delete-task" data-action="{{ path('task_delete', {id: task.id}) }}" data-confirm="Supprimer la tâche '{{ task.title }}' ?">Supprimer</a>
+				<a href="{{ path('task_delete', {id: task.id}) }}" class="button js-delete-task" data-confirm="Supprimer la tâche '{{ task.title }}' ?">Supprimer</a>
 			</div>
 		</div>
 	</div>

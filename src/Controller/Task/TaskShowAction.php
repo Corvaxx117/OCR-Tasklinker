@@ -12,6 +12,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/tasks/{id}', name: 'task_show')]
 class TaskShowAction extends AbstractController
 {
+    /**
+     * Affiche une tâche.
+     *
+     * @param Task $task
+     * @return Response
+     */
     public function __invoke(Task $task): Response
     {
         return $this->render('task/show.html.twig', [

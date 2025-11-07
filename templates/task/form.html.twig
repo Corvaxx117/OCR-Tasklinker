@@ -24,9 +24,8 @@
 		<div class="field">{{ form_row(form.description) }}</div>
 		<div class="field">{{ form_row(form.deadline) }}</div>
 		<div class="field">{{ form_row(form.status) }}</div>
-		<div class="field">{{ form_row(form.employee) }}</div>
-		<div class="field">{{ form_row(form.project) }}</div>
+		<div class="field">{{ form_row(form.assignees) }}</div>
 		<button class="button button-submit">{{ is_edit ? 'Enregistrer' : 'Créer' }}</button>
-		{{ form_end(form) }}
+		{{ form_end(form, { render_rest:false }) }}
 	</form>
 {% endblock %}

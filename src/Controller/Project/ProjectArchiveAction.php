@@ -14,11 +14,20 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/projects/{id}/archive', name: 'project_archive', methods: ['DELETE'])]
 class ProjectArchiveAction extends AbstractController
 {
+    /**
+     * Archive a project.
+     *
+     * @param Project $project
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     public function __invoke(Project $project, Request $request, EntityManagerInterface $em): Response
     {
         $project->setIsArchived(true);
         $em->flush();
-        $this->addFlash('success', 'Projet archivé');
+
+        $this->addFlash('warning', 'Projet archivé');
 
         return $this->redirectToRoute('project_list');
     }

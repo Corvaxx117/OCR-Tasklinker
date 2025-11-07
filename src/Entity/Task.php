@@ -24,9 +24,9 @@ class Task
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Employee $employee = null;
+    #[ORM\ManyToMany(targetEntity: Employee::class)]
+    #[ORM\JoinTable(name: 'task_employee')]
+    private Collection $assignees;
 
     #[ORM\Column(type: 'string', enumType: TaskStatus::class, options: ['default' => TaskStatus::TODO->value])]
     private TaskStatus $status = TaskStatus::TODO;
@@ -40,7 +40,14 @@ class Task
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Assert\GreaterThanOrEqual(value: 'today', message: 'La deadline ne peut pas être dans le passé.')]
     private ?\DateTimeInterface $deadline = null;
+
+
+    public function __construct()
+    {
+        $this->assignees = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -58,15 +65,25 @@ class Task
         return $this;
     }
 
-    public function getEmployee(): ?Employee
+    /**
+     * @return Collection<int, Employee>
+     */
+    public function getAssignees(): Collection
     {
-        return $this->employee;
+        return $this->assignees;
     }
 
-    public function setEmployee(?Employee $employee): self
+    public function addAssignee(Employee $employee): self
     {
-        $this->employee = $employee;
+        if (!$this->assignees->contains($employee)) {
+            $this->assignees->add($employee);
+        }
+        return $this;
+    }
 
+    public function removeAssignee(Employee $employee): self
+    {
+        $this->assignees->removeElement($employee);
         return $this;
     }
 

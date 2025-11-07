@@ -15,6 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/team/{id}/edit', name: 'employee_edit')]
 class EmployeeEditAction extends AbstractController
 {
+    /**
+     * Modifie un employé.
+     *
+     * @param Employee $employee
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     public function __invoke(Employee $employee, Request $request, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(EmployeeType::class, $employee);
@@ -22,6 +30,7 @@ class EmployeeEditAction extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
+            $this->addFlash('success', 'Membre mis à jour');
 
             return $this->redirectToRoute('team_list');
         }

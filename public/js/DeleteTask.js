@@ -1,8 +1,5 @@
-import DeleteLinkHandler from "./class/DeleteLinkHandler.js";
-
-// Suppression tâches
-new DeleteLinkHandler({
-    selector: "a.js-delete-task",
-    getConfirmMessage: (link) =>
-        link.dataset.confirm || "Supprimer cette tâche ?",
+document.querySelector("a.js-delete-task").addEventListener("click", (e) => {
+    if (!confirm(e.target.dataset.confirm)) {
+        e.preventDefault();
+    }
 });

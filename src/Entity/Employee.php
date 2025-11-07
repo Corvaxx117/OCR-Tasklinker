@@ -57,9 +57,13 @@ class Employee
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'members')]
     private Collection $projects;
 
+    #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'assignees')]
+    private Collection $tasks;
+
     public function __construct()
     {
         $this->projects = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,9 +174,24 @@ class Employee
     }
 
     /**
-     * Renvoie les initiales du nom et du pr nom de l'employ .
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->addAssignee($this);
+        }
+        return $this;
+    }
+    /**
+     * Renvoie les initiales du nom et du prénom de l'employé.
      *
-     * @return string Les initiales de l'employ .
+     * @return string Les initiales de l'employé.
      */
     public function getInitials(): string
     {

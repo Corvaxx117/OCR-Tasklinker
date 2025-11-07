@@ -1,87 +1,126 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tâches du projet - TaskLinker{% endblock %}
+{% block title %}
+	{{ project.name }}
+	- TaskLinker
+{% endblock %}
 
-{% block page_title %}Tâches du projet{% endblock %}
+{% block page_title %}
+	<div class="flex-header">
+		<h1>{{ project.name }}</h1>
+		<div class="user-list">
+			{% for member in project.members %}
+				<div class="avatar" title="{{ member.firstName }} {{ member.lastName }}">{{ member.firstName|slice(0,1) }}{{ member.lastName|slice(0,1) }}</div>
+			{% else %}
+				<div class="avatar empty" title="Aucun membre">-</div>
+			{% endfor %}
+		</div>
+		<a class="button" href="{{ path('project_edit', {id: project.id}) }}">Modifier</a>
+	</div>
+{% endblock %}
 
 {% block body %}
-	<div id="content">
-		<a href="{{ path('project_list') }}" class="back-link">&larr; retour</a>
-		<div
-			id="tasks-container">
-			{# Trois colonnes: To Do / Doing / Done #}
-			<div class="task-column">
-				<h2>To Do</h2>
-				<div class="tasks-list">
-					{% for task in tasks_todo %}
-						<a class="task" href="{{ path('task_show', {id: task.id}) }}">
-							<h3>{{ task.title }}</h3>
-							<p>{% set desc = task.description ?? '' %}{{ desc|length > 120 ? desc|slice(0,120) ~ '…' : desc }}</p>
-							<div class="task-infos">
-								{% if task.deadline %}
-									<div class="task-deadline">
-										<i class="fa-regular fa-calendar"></i>
-										{{ task.deadline|date('d/m/Y') }}</div>
-								{% endif %}
-								{% if task.employee %}
-									<div class="mini-user">{{ task.employee.firstName|slice(0,1) }}{{ task.employee.lastName|slice(0,1) }}</div>
-								{% endif %}
-							</div>
-						</a>
-					{% else %}
-						<p class="empty">Aucune tâche.</p>
-					{% endfor %}
-					<a href="{{ path('task_create') }}" class="task-add">+ Ajouter une tâche</a>
-				</div>
+	{# <div id="content"> #}
+	<a href="{{ path('project_list') }}" class="back-link">&larr; retour</a>
+	<div
+		id="tasks-container">
+		{# Trois colonnes: To Do / Doing / Done #}
+		<div class="task-column">
+			<h2>To Do</h2>
+			<div class="tasks-list">
+				{% for task in tasks_todo %}
+					<a class="task" href="{{ path('task_show', {id: task.id}) }}">
+						<h3>{{ task.title }}</h3>
+						<p>{% set desc = task.description ?? '' %}{{ desc|length > 120 ? desc|slice(0,120) ~ '…' : desc }}</p>
+						<div class="task-infos">
+							{% if task.deadline %}
+								<div class="task-deadline">
+									<i class="fa-regular fa-calendar"></i>
+									{{ task.deadline|date('d/m/Y') }}</div>
+							{% endif %}
+							{% if task.assignees is not empty %}
+								<div class="assignees d-flex">
+									{% for person in task.assignees %}
+										<div class="mini-user" title="{{ person.firstName }} {{ person.lastName }}">
+											{{ person.firstName|slice(0,1) }}{{ person.lastName|slice(0,1) }}
+										</div>
+									{% endfor %}
+								</div>
+							{% else %}
+								<div class="assignees none">Non assignée</div>
+							{% endif %}
+						</div>
+					</a>
+				{% else %}
+					<p class="empty">Aucune tâche.</p>
+				{% endfor %}
+				<a href="{{ path('task_create', {id: project.id, status: 'todo'}) }}" class="task-add">+ Ajouter une tâche</a>
 			</div>
-			<div class="task-column">
-				<h2>Doing</h2>
-				<div class="tasks-list">
-					{% for task in tasks_doing %}
-						<a class="task" href="{{ path('task_show', {id: task.id}) }}">
-							<h3>{{ task.title }}</h3>
-							<p>{% set desc = task.description ?? '' %}{{ desc|length > 120 ? desc|slice(0,120) ~ '…' : desc }}</p>
-							<div class="task-infos">
-								{% if task.deadline %}
-									<div class="task-deadline">
-										<i class="fa-regular fa-calendar"></i>
-										{{ task.deadline|date('d/m/Y') }}</div>
-								{% endif %}
-								{% if task.employee %}
-									<div class="mini-user">{{ task.employee.firstName|slice(0,1) }}{{ task.employee.lastName|slice(0,1) }}</div>
-								{% endif %}
-							</div>
-						</a>
-					{% else %}
-						<p class="empty">Aucune tâche.</p>
-					{% endfor %}
-					<a href="{{ path('task_create') }}" class="task-add">+ Ajouter une tâche</a>
-				</div>
+		</div>
+		<div class="task-column">
+			<h2>Doing</h2>
+			<div class="tasks-list">
+				{% for task in tasks_doing %}
+					<a class="task" href="{{ path('task_show', {id: task.id}) }}">
+						<h3>{{ task.title }}</h3>
+						<p>{% set desc = task.description ?? '' %}{{ desc|length > 120 ? desc|slice(0,120) ~ '…' : desc }}</p>
+						<div class="task-infos">
+							{% if task.deadline %}
+								<div class="task-deadline">
+									<i class="fa-regular fa-calendar"></i>
+									{{ task.deadline|date('d/m/Y') }}</div>
+							{% endif %}
+							{% if task.assignees is not empty %}
+								<div class="assignees d-flex">
+									{% for person in task.assignees %}
+										<div class="mini-user" title="{{ person.firstName }} {{ person.lastName }}">
+											{{ person.firstName|slice(0,1) }}{{ person.lastName|slice(0,1) }}
+										</div>
+									{% endfor %}
+								</div>
+							{% else %}
+								<div class="assignees none">Non assignée</div>
+							{% endif %}
+						</div>
+					</a>
+				{% else %}
+					<p class="empty">Aucune tâche.</p>
+				{% endfor %}
+				<a href="{{ path('task_create', {id: project.id, status: 'doing'}) }}" class="task-add">+ Ajouter une tâche</a>
 			</div>
-			<div class="task-column">
-				<h2>Done</h2>
-				<div class="tasks-list">
-					{% for task in tasks_done %}
-						<a class="task" href="{{ path('task_show', {id: task.id}) }}">
-							<h3>{{ task.title }}</h3>
-							<p>{% set desc = task.description ?? '' %}{{ desc|length > 120 ? desc|slice(0,120) ~ '…' : desc }}</p>
-							<div class="task-infos">
-								{% if task.deadline %}
-									<div class="task-deadline">
-										<i class="fa-regular fa-calendar"></i>
-										{{ task.deadline|date('d/m/Y') }}</div>
-								{% endif %}
-								{% if task.employee %}
-									<div class="mini-user">{{ task.employee.firstName|slice(0,1) }}{{ task.employee.lastName|slice(0,1) }}</div>
-								{% endif %}
-							</div>
-						</a>
-					{% else %}
-						<p class="empty">Aucune tâche.</p>
-					{% endfor %}
-					<a href="{{ path('task_create') }}" class="task-add">+ Ajouter une tâche</a>
-				</div>
+		</div>
+		<div class="task-column">
+			<h2>Done</h2>
+			<div class="tasks-list">
+				{% for task in tasks_done %}
+					<a class="task" href="{{ path('task_show', {id: task.id}) }}">
+						<h3>{{ task.title }}</h3>
+						<p>{% set desc = task.description ?? '' %}{{ desc|length > 120 ? desc|slice(0,120) ~ '…' : desc }}</p>
+						<div class="task-infos">
+							{% if task.deadline %}
+								<div class="task-deadline">
+									<i class="fa-regular fa-calendar"></i>
+									{{ task.deadline|date('d/m/Y') }}</div>
+							{% endif %}
+							{% if task.assignees is not empty %}
+								<div class="assignees d-flex">
+									{% for person in task.assignees %}
+										<div class="mini-user" title="{{ person.firstName }} {{ person.lastName }}">
+											{{ person.firstName|slice(0,1) }}{{ person.lastName|slice(0,1) }}
+										</div>
+									{% endfor %}
+								</div>
+							{% else %}
+								<div class="assignees none">Non assignée</div>
+							{% endif %}
+						</div>
+					</a>
+				{% else %}
+					<p class="empty">Aucune tâche.</p>
+				{% endfor %}
+				<a href="{{ path('task_create', {id: project.id, status: 'done'} ) }}" class="task-add">+ Ajouter une tâche</a>
 			</div>
 		</div>
 	</div>
+	{# </div> #}
 {% endblock %}

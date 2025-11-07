@@ -14,6 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/', name: 'homepage')]
 class ProjectListAction extends AbstractController
 {
+    /**
+     * @return Response
+     * 
+     * @param ProjectRepository $projectRepository
+     * @param LoggerInterface $logger
+     * 
+     * Affiche la liste des projets actifs, en écrivant le nombre de projets dans le journal.
+     */
     public function __invoke(ProjectRepository $projectRepository, LoggerInterface $logger): Response
     {
         $projects = $projectRepository->findAllActive();

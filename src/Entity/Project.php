@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
@@ -50,6 +51,19 @@ class Project
     {
         $this->members = new ArrayCollection();
         $this->tasks = new ArrayCollection();
+    }
+
+    #[Assert\Callback]
+    public function validateChronology(ExecutionContextInterface $context): void
+    {
+        if ($this->deadline === null || $this->startedAt === null) {
+            return; // deadline optionnelle ou startedAt manquant (déjà NotBlank)
+        }
+        if ($this->deadline < $this->startedAt) {
+            $context->buildViolation('La deadline doit être supérieure ou égale à la date de démarrage.')
+                ->atPath('deadline')
+                ->addViolation();
+        }
     }
 
     public function getId(): ?int

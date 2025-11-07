@@ -1,0 +1,26 @@
+{# Fragment réutilisable d'affichage des messages flash #}
+{% set flashes = app.flashes %}
+	{% if flashes is not empty %}
+		<div class="flash-messages" aria-live="polite" aria-atomic="true"> {% for label, messages in flashes %}
+			{% set icon = {
+				'success': '✔',
+				'error': '✖',
+				'warning': '⚠',
+				'info': 'ℹ'
+			}[label] ?? '' %}
+			<div class="flash flash-{{ label }}" role="alert" data-flash>
+				<div class="flash-content">
+					{% if icon %}
+						<span class="flash-icon" aria-hidden="true">{{ icon }}</span>
+					{% endif %}
+					<div class="flash-text">
+						{% for message in messages %}
+							<p>{{ message }}</p>
+						{% endfor %}
+					</div>
+					<button type="button" class="flash-close" aria-label="Fermer">×</button>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endif %}
